@@ -20,11 +20,10 @@ function loadData() {
     $body.append("<img class='bgimg' src='" + streetViewURL + "'>"); 
 
     //New York Times AJAX request
-    var nytimesURL = "https://api.nysdtimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
-    // var nytimesURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
+    var nytimesURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
 
     $.getJSON(nytimesURL, function(data) {
-        console.log(data);
+        // console.log(data);
 
         $nytHeaderElem.text("New York Times Articles About " + cityStr);
 
@@ -33,13 +32,37 @@ function loadData() {
             var article = articles[i];
 
             $nytElem.append("<li class='article'>" + 
-                                "<a href='" + article.web_url + "'>" + article.headline.main + "</a>" +
+                                "<a href='" + article.web_url + "' target='_blank'>" + article.headline.main + "</a>" +
                                 "<p>" + article.snippet + "</p>"
                             );
         }
     }).error(function(e){
         $nytHeaderElem.text("New York Times Articles Could Not Be Loaded");
     });
+
+
+    //Wikipedia AJAX request
+    var wikipediaURL = "http://en.wikipedia.org/w/api.php?action=opensearch&search=" + cityStr + "&format=json&callback=wikiCallback";
+    var wikipediaRequestTimeout = setTimeout(function(){
+        $wikiElem.text("Failed to get Wikipedia resources");
+    }, 8000); 
+
+    $.ajax({
+        url: wikipediaURL,
+        dataType: "jsonp",
+        success: function( response ) {
+            // console.log(response);
+                        
+            var articleList = response[1];
+            var articleURLList = response[3];
+
+            for(var i = 0; i < articleList.length; i++) {
+                $wikiElem.append("<li><a href='" + articleURLList[i] + "' target='_blank'>" + articleList[i] + "</a>");
+            }
+
+            clearTimeout(wikipediaRequestTimeout);
+        }
+    })
 
     return false;
 };
