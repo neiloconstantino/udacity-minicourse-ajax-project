@@ -42,7 +42,7 @@ function loadData() {
 
 
     //Wikipedia AJAX request
-    var wikipediaURL = "http://en.wikipedia.org/w/api.php?action=opensearch&search=" + cityStr + "&format=json&callback=wikiCallback";
+    var wikipediaURL = "http://en.asdfasdfwikipedia.org/w/api.php?action=opensearch&search=" + cityStr + "&format=json&callback=wikiCallback";
     var wikipediaRequestTimeout = setTimeout(function(){
         $wikiElem.text("Failed to get Wikipedia resources");
     }, 8000); 
