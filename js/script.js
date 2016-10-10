@@ -12,8 +12,6 @@ function loadData() {
     $nytElem.text("");
 
     // load streetview
-
-    // YOUR CODE GOES HERE!
     var streetStr = $("#street").val();//get user input for "#street"
     var cityStr = $("#city").val(); //get user input for "#city"
     var address = streetStr + ", " + cityStr;
@@ -22,9 +20,8 @@ function loadData() {
     $body.append("<img class='bgimg' src='" + streetViewURL + "'>"); 
 
     //New York Times AJAX request
-    var nytimesURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
-
-
+    var nytimesURL = "https://api.nysdtimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
+    // var nytimesURL = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=" + cityStr + "&sort=newest&api-key=91b3f4fc57f641c28fcfe790d382f507";
 
     $.getJSON(nytimesURL, function(data) {
         console.log(data);
@@ -32,50 +29,17 @@ function loadData() {
         $nytHeaderElem.text("New York Times Articles About " + cityStr);
 
         var articles = data.response.docs;
-        
+        for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
 
-
-
-
-
-        //FIRST TRY
-        // var items = [];
-
-        // $.each( data, function( key, val ) {
-        //     items.push("<li id='" + key + "'>" + val + "</li>");
-        // });
-
-        // $( "<ul/>", {
-        //     "class" : "my-new-list",
-        //     html: items.join( "" )
-        // }).appendTo( "body" );
-
-        // EXAMPLE FROM jQuery WEBSITE
-        // $.getJSON( "ajax/test.json", function( data ) {
-        //     var items = [];
-        //     $.each( data, function( key, val ) {
-        //         items.push( "<li id='" + key + "'>" + val + "</li>" );
-        //     });
-        
-        //     $( "<ul/>", {
-        //         "class": "my-new-list",
-        //         html: items.join( "" )
-        //     }).appendTo( "body" );
-        // });
+            $nytElem.append("<li class='article'>" + 
+                                "<a href='" + article.web_url + "'>" + article.headline.main + "</a>" +
+                                "<p>" + article.snippet + "</p>"
+                            );
+        }
+    }).error(function(e){
+        $nytHeaderElem.text("New York Times Articles Could Not Be Loaded");
     });
-
-            
-
-
-
-
-    // "<ul id='nytimes-articles' class='article-list'>" +
-    //     FOR EACH ARTICLE
-    //     "<li class='article'>" +
-    //         "<a href='" + nytimesArticleURL + "'>" + nytimesArticleDescription + "</a>" +
-    //             "<p>" + nytimesArticle1stParagraph + "</p>" +
-    //     "</li>" + 
-    // "</ul>"
 
     return false;
 };
